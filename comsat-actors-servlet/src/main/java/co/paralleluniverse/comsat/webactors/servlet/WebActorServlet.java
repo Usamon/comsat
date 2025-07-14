@@ -307,6 +307,9 @@ public final class WebActorServlet extends HttpServlet implements HttpSessionLis
                     } catch (final IOException e) {
                         // TODO Handle
                         e.printStackTrace();
+                    }finally{
+                        //■ きちんと後始末
+                        unblockSessionRequests();
                     }
                 }
             }, REPLY_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -487,6 +490,18 @@ public final class WebActorServlet extends HttpServlet implements HttpSessionLis
                 ctx.complete();
             }
         }
+
+		//■Quasar7.9で必須になるオーバーライド
+		@Override
+		protected void unlinked(ActorRef actor) {
+		    // no-op or your logic
+		}
+		@Override
+		protected void linked(ActorRef actor) {
+		    // 必要であれば何らかの初期化。なければ空実装でもOK
+		}
+
+
     }
 
     private static final class HttpRequestChannel implements SendPort<HttpResponse> {
@@ -573,6 +588,16 @@ public final class WebActorServlet extends HttpServlet implements HttpSessionLis
         public final String toString() {
             return "HttpStreamActor{request + " + getName() + "}";
         }
+		//■Quasar7.9で必須になるオーバーライド
+		@Override
+		protected void unlinked(ActorRef actor) {
+		    // no-op or your logic
+		}
+		@Override
+		protected void linked(ActorRef actor) {
+		    // 必要であれば何らかの初期化。なければ空実装でもOK
+		}
+
     }
 
     private static final class HttpStreamChannel implements SendPort<WebDataMessage> {

@@ -44,7 +44,7 @@ subprojects {
     ext.metricsVer      = '3.1.2'
     ext.asmVer          = '5.0.4'
 
-    ext.quasarVer       = '0.7.9'
+    ext.quasarVer       = '0.7.6'
 
     ext.jettyVer        = '9.2.14.v20151106' // '9.3.x' requires JDK8
     ext.tomcatVer       = '8.0.33'
@@ -635,34 +635,23 @@ subprojects {
     }
 }
 
+task javadoc(type: Javadoc) {
+    title = "Comsat ${project(':comsat-actors-api').version}"
+    destinationDir = file("docs/javadoc")
+    source = files(subprojects.collect { project -> project.sourceSets.main.allJava })
+    classpath = files(subprojects.collect { project -> project.sourceSets.main.compileClasspath })
+    options {
+        addStringOption('sourcepath', subprojects.configurations.srcFiles.files.flatten().join(':'))
+        docletpath = configurations.markdownDoclet.files.asType(List)
+        doclet = 'ch.raffael.doclets.pegdown.PegdownDoclet'
+        addStringOption("parse-timeout", "10")
+        // stylesheetFile = rootProject.file('./baselib/javadoc.css')
+        links = javadocLinks
+    }
+    excludes = javadocExcludes
+}
 
-
-
-//task javadoc(type: Javadoc) {
-//    title = "Comsat ${project(':comsat-actors-api').version}"
-//    destinationDir = file("docs/javadoc")
-//    source = files(subprojects.collect { project -> project.sourceSets.main.allJava })
-//    classpath = files(subprojects.collect { project -> project.sourceSets.main.compileClasspath })
-//    options {
-//        addStringOption('sourcepath', subprojects.configurations.srcFiles.files.flatten().join(':'))
-//        docletpath = configurations.markdownDoclet.files.asType(List)
-//        doclet = 'ch.raffael.doclets.pegdown.PegdownDoclet'
-//        addStringOption("parse-timeout", "10")
-//        // stylesheetFile = rootProject.file('./baselib/javadoc.css')
-//        links = javadocLinks
-//    }
-//    excludes = javadocExcludes
-//}
-
-
-
-
-// 古いGladleの書き方
-//task clean(dependsOn: subprojects.clean) << {
-//    delete 'docs/javadoc'
-//}
-
-task docClean(type: Delete) {
+task clean(dependsOn: subprojects.clean) << {
     delete 'docs/javadoc'
 }
 
@@ -670,20 +659,13 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
-        maven { url "https://plugins.gradle.org/m2/" }
     }
+
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.36.0'
-        classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.10.0' // ← 必要
+        classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.10.0'
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.6'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.0'
     }
 }
-// ここから下に plugin の適用を記述
-apply plugin: 'license'
-apply plugin: 'java'
-apply plugin: 'com.github.ben-manes.versions'
-apply plugin: 'com.github.johnrengelman.shadow'
-
-
 
 defaultTasks 'install'

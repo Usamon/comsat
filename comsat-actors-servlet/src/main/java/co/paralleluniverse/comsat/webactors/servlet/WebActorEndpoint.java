@@ -201,6 +201,17 @@ public final class WebActorEndpoint extends Endpoint {
         public String toString() {
             return "WebSocketActor{" + "session=" + session + ", webActor=" + webActor + '}';
         }
+
+		//■Quasar7.9で必須になるオーバーライド
+		@Override
+		protected void unlinked(ActorRef actor) {
+		    // no-op or your logic
+		}
+		@Override
+		protected void linked(ActorRef actor) {
+		    // 必要であれば何らかの初期化。なければ空実装でもOK
+		}
+
     }
 
     private static final class WebSocketChannel implements SendPort<WebDataMessage> {

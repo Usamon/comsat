@@ -356,6 +356,16 @@ public class WebActorHandler extends SimpleChannelInboundHandler<Object> {
             userActor = null;
             ctx = null;
         }
+
+		//■Quasar7.9で必須になるオーバーライド
+		@Override
+		protected void unlinked(ActorRef actor) {
+		    // no-op or your logic
+		}
+		@Override
+		protected void linked(ActorRef actor) {
+		    // 必要であれば何らかの初期化。なければ空実装でもOK
+		}
     }
 
     private static final class WebSocketChannelAdapter implements SendPort<WebDataMessage> {
@@ -672,6 +682,16 @@ public class WebActorHandler extends SimpleChannelInboundHandler<Object> {
         private boolean isRequestInProgress() {
             return gate.get() != null;
         }
+
+		//■Quasar7.9で必須になるオーバーライド
+		@Override
+		protected void unlinked(ActorRef actor) {
+		    // no-op or your logic
+		}
+		@Override
+		protected void linked(ActorRef actor) {
+		    // 必要であれば何らかの初期化。なければ空実装でもOK
+		}
     }
 
     private static final class HttpChannelAdapter implements SendPort<HttpResponse> {
@@ -778,6 +798,16 @@ public class WebActorHandler extends SimpleChannelInboundHandler<Object> {
         public String toString() {
             return "HttpStreamActorAdapter{request + " + getName() + "}";
         }
+
+		//■Quasar7.9で必須になるオーバーライド
+		@Override
+		protected void unlinked(ActorRef actor) {
+		    // no-op or your logic
+		}
+		@Override
+		protected void linked(ActorRef actor) {
+		    // 必要であれば何らかの初期化。なければ空実装でもOK
+		}
     }
 
     private static final class HttpStreamChannelAdapter implements SendPort<WebDataMessage> {
